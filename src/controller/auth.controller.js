@@ -1,4 +1,4 @@
-const crypto = require("crypto")
+const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const userModel = require("../models/user.model")
 
@@ -6,7 +6,7 @@ const userModel = require("../models/user.model")
 //Register Controller
 async function registerController(req, res)  {
     const { email, username, password, bio, profile_image } = req.body
-    const isUserExistsByEmail = await userModel.findOne({email})
+    // const isUserExistsByEmail = await userModel.findOne({email})
     
 
     //This is the effective way to check whether user already exist or not
@@ -19,11 +19,11 @@ async function registerController(req, res)  {
 
     if(isUserAlreadyExist){
         return res.status(409).json({
-            message:"User Already Exist "+ (isUserAlreadyExist.email === email ? "Email Already Exist":"Username Already Exist")
+            message:"User Already Exist"+ (isUserAlreadyExist.email === email ? "with this email":" with this username")
         })
     }
 
-    const hash = crypto.createHash('sha256').update(password).digest('hex');
+    const hash = await bcrypt.hash(password, 10)
 
     const user = await userModel.create({
         username,
@@ -71,9 +71,9 @@ async function loginController(req,res){
         })
     }
 
-    const hash = crypto.createHash("sha256").update(password).digest("hex")
+    
 
-    const isPasswordValid = hash === user.password
+    const isPasswordValid = await bcrypt.compare(password, user.password)
 
     if(!isPasswordValid){
         return res.status(401).json({

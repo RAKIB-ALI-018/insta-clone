@@ -1,5 +1,5 @@
 => Authentication
-       1.register
+       1.register ✅
            -> user ka data save karna DB mein
            -> user ko token dena
        2.login
