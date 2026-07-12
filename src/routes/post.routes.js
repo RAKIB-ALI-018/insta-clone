@@ -19,6 +19,7 @@ postRouter.post("/",upload.single("image"),postController.createPostController)
 
 
 // GET /api/posts/ [protected]
+
 postRouter.get("/", postController.getPostController )
 
 
