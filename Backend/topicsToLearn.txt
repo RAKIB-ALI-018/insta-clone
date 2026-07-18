@@ -1,0 +1,4 @@
+1. cloud storage provider vs server bandwidth
+2. imageKit documentation
+3. Request Flow(middleware and next())
+4. Followers/Following — Array-in-User-Doc ka approach aur uske problems--->Edge Collection(edge Collection => relation between two users)
