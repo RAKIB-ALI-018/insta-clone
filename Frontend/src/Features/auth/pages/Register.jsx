@@ -1,3 +1,6 @@
+//* sirf UI ke liye code likhenge
+//* backend se connect karne ke liye auth.api.js file mein code likhenge
+
 import React from 'react'
 import "../styles/register.scss"
 import { useNavigate } from 'react-router-dom'
@@ -12,21 +15,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
 
   async function submitHandler(e){
-    e.preventDefault();
-
-    await axios.post("http://localhost:3000/api/auth/register",{
-      username,email,password
-    },{
-      withCredentials:true //* in Axios tells the browser to include credentials (cookies, authorization headers, TLS client certificates) with cross-origin requests.
-    })
-    .then(res=>{
-      console.log(res.data);
-      
-    })
-
-    setUsername("")
-    setEmail("")
-    setPassword("")
+    e.preventDefault();   
   }
 
   return (
