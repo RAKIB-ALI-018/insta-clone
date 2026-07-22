@@ -1,11 +1,8 @@
-//* sirf UI ke liye code likhenge
-//* backend se connect karne ke liye auth.api.js file mein code likhenge
-
 import React from 'react'
 import "../styles/register.scss"
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
 import { useState } from "react";
+import { useAuth } from "../hook/useAuth"
 
 const Register = () => {
   const navigate = useNavigate();
@@ -13,16 +10,34 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const { loading, handleRegister } = useAuth()
 
   async function submitHandler(e){
-    e.preventDefault();   
+    e.preventDefault();
+    setError("")
+
+    try {
+      const res = await handleRegister(username, email, password)
+      console.log(res);
+      navigate("/feed")
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed.")
+    }
+  }
+
+  if(loading){
+    return(
+      <main><h1>Loading...</h1></main>
+    )
   }
 
   return (
     <main className='register-page'>
       <h1>Register</h1>
 
-      <form onSubmit={submitHandler}>
+      <form onSubmit={submitHandler} noValidate>
         <input
         value={username}
         onInput={(e)=>setUsername(e.target.value)}
@@ -36,7 +51,10 @@ const Register = () => {
         <input
         value={password}
         onInput={(e)=>setPassword(e.target.value)}
-        type="text" placeholder='Enter password' />
+        type="password" placeholder='Enter password' />
+
+        {error && <p className='error-text'>{error}</p>}
+
         <button>Register</button>
       </form>
       <p className='login-text'>
@@ -45,8 +63,6 @@ const Register = () => {
           Log in
         </span>
       </p>
-
-
     </main>
   );
 }

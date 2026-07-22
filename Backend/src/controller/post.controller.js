@@ -46,7 +46,7 @@ async function getPostController(req, res) {
 
 }
 
-async function getPostDetails(req, res) {
+async function getPostDetailsController(req, res) {
 
 
     const userId = req.user.id
@@ -78,7 +78,7 @@ async function getPostDetails(req, res) {
 
 // Post like/unlike controller
 async function likePostController(req, res) {
-    const username = req.user.username
+    const userId = req.user.id   
     const postId = req.params.postId
 
     const post = await postModel.findById(postId)
@@ -89,11 +89,10 @@ async function likePostController(req, res) {
 
     const existingLike = await likeModel.findOne({
         post: postId,
-        user: username
+        user: userId   
     })
 
     if (existingLike) {
-        // toggle: unlike if already liked
         await likeModel.findByIdAndDelete(existingLike._id)
         return res.status(200).json({
             message: "Post unliked successfully"
@@ -102,7 +101,7 @@ async function likePostController(req, res) {
 
     const like = await likeModel.create({
         post: postId,
-        user: username
+        user: userId   
     })
 
     res.status(200).json({
@@ -111,9 +110,38 @@ async function likePostController(req, res) {
     })
 }
 
+async function getFeedController(req, res) {
+    const user = req.user
+    const posts = await Promise.all((await postModel.find().populate("user").lean()) //jab schema create hoga tab ref jaroor dena
+        // * find() → Fetches all posts.
+        // * populate("user") → Looks at the user field (an ObjectId) and 
+        // * replaces it with the full user document from the User collection.
+
+        //but isme password bhi aa rha hoga
+        //isiliye "select:false" ka use karte hai schema mein(but ye problem karega login ke time)
+        // to uske liye "select("+password")" ka use karenge..login controller mein
+
+        .map(async (post) => {
+            const isLiked = await likeModel.findOne({
+                user: user.id,
+                post: post._id
+            })
+
+            post.isLiked = !!isLiked
+
+            return post
+        }))
+
+    res.status(200).json({
+        message: "Posts Fetched Successfully",
+        posts
+    })
+}
+
 module.exports = {
     createPostController,
     getPostController,
-    getPostDetails,
-    likePostController
+    getPostDetailsController,
+    likePostController,
+    getFeedController
 }

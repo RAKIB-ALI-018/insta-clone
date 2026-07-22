@@ -1,17 +1,16 @@
 import React from 'react';
 import AppRoutes from './AppRoutes';
 import "./style.scss"
-import Login from './Features/auth/pages/Login';
-import { AuthProvider } from "./Features/auth/auth.context.jsx"
-
+import { AuthProvider } from "./Features/auth/auth.context"
+import { PostContextProvider } from "./Features/post/post.context"
 
 const App = () => {
   return (
       <AuthProvider>
-        <AppRoutes />
+        <PostContextProvider>
+          <AppRoutes />
+        </PostContextProvider>
       </AuthProvider>
-
-    
   );
 }
 

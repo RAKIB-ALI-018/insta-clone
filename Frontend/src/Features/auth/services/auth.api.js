@@ -18,13 +18,14 @@ export async function register(username, email, password) {
     }catch (err) {
         throw err
     }
-
-
 }
-export async function login(username, password) {
+
+export async function login(usernameOrEmail, password) {
     try {
         const response = await api.post("/login", {
-            username, password
+            username: usernameOrEmail,
+            email: usernameOrEmail,
+            password
         })
         return response.data
     }catch (err) {

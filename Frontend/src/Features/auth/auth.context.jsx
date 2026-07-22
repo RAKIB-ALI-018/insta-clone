@@ -1,5 +1,3 @@
-//State layer(3rd layer of front end architecture)
-
 import { useState, useEffect, createContext } from 'react'
 import { login, register, getMe } from "./services/auth.api"
 
@@ -8,17 +6,32 @@ export const AuthContext = createContext()
 export function AuthProvider({children}) {
 
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(null);
+    const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        const checkAuth = async () => {
+            setLoading(true)
+            try {
+                const response = await getMe()
+                setUser(response.user)
+            } catch (err) {
+                setUser(null)
+            } finally {
+                setLoading(false)
+            }
+        }
+        checkAuth()
+    }, [])
 
-    const handleLogin = async (username, password) => {
+    const handleLogin = async (email, password) => {
         setLoading(true)
         try{
-            const response = await login(username, password)
+            const response = await login(email, password)
             setUser(response.user)
+            return response
         }catch(err){
             console.log(err);
-            
+            throw err   
         }finally{
             setLoading(false)
         }
@@ -29,9 +42,10 @@ export function AuthProvider({children}) {
         try{
             const response = await register(username, email, password)
             setUser(response.user)
+            return response
         }catch(err){
             console.log(err);
-            
+            throw err   
         }finally{
             setLoading(false)
         }
@@ -43,4 +57,3 @@ export function AuthProvider({children}) {
         </AuthContext.Provider>
     )
 }
-

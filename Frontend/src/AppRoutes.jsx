@@ -1,7 +1,8 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import Register from './Features/auth/pages/Register'
 import Login from './Features/auth/pages/Login'
-import Home from './Features/auth/pages/Home'
+import Feed from './Features/post/pages/Feed'
+import CreatePost from './Features/post/components/CreatePost'
 
 function AppRoutes() {
     return (
@@ -10,7 +11,9 @@ function AppRoutes() {
                 <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path='/login' element={<Login />} />
                 <Route path='/register' element={<Register />} />
-                <Route path='/home' element={<Home />} />
+                <Route path='/feed' element={<Feed />} />
+                <Route path='/create' element={<CreatePost/>} />
+                
             </Routes>
         </BrowserRouter>
     )
