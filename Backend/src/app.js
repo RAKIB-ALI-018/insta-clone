@@ -14,8 +14,10 @@ const app = express()
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    credentials:true,
-    origin:"http://localhost:5173"
+    credentials: true,
+    origin: process.env.NODE_ENV === "production"
+        ? true
+        : "http://localhost:5173"
 }))
 
 //using routes

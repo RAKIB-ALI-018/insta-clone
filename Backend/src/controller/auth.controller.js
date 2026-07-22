@@ -2,6 +2,11 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const userModel = require("../models/user.model")
 
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax"
+}
 
 async function registerController(req, res) {
     const { email, username, password, bio, profile_image } = req.body
@@ -34,7 +39,7 @@ async function registerController(req, res) {
         username: user.username
     }, process.env.JWT_SECRET, { expiresIn: "1d" })
 
-    res.cookie("token", token)
+    res.cookie("token", token, cookieOptions)
 
     res.status(201).json({
         message: "User Registered Successfully.",
@@ -76,7 +81,7 @@ async function loginController(req, res) {
         username: user.username
     }, process.env.JWT_SECRET, { expiresIn: "1d" })
 
-    res.cookie("token", token)
+    res.cookie("token", token, cookieOptions)
 
     res.status(200).json({
         message: "User Logged In Successfully.",
